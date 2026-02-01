@@ -18,7 +18,7 @@ const PORT = process.env.PORT || 5000;
 
 const allowedOrigins = [
   "http://localhost:5173",
-  "https://YOUR_FRONTEND.vercel.app"
+  "https://collab-app-mesa.vercel.app"
 ];
 
 app.use(
