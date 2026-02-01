@@ -46,12 +46,13 @@ const login = async (req, res) => {
     const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "1h" });
 
     // ✅ Production-ready cookie for cross-origin (Vercel → Render)
-    res.cookie("token", token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production", // must be true in prod HTTPS
-      sameSite: "none", // allow cross-site cookies
-      maxAge: 3600000, // 1 hour
-    });
+res.cookie("token", token, {
+  httpOnly: true,
+  secure: true, // MUST be true for HTTPS (Render is HTTPS)
+  sameSite: "none", // allow cross-site cookies
+  maxAge: 3600000,
+});
+
 
     res.json({
       message: "Login success",
