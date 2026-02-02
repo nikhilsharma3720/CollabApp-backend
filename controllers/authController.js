@@ -68,9 +68,12 @@ res.cookie("token", token, {
 function logout(req, res) {
   res.cookie("token", "", {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "none", // cross-site
+    // If testing cross-domain (Local frontend -> Render backend), 
+    // this MUST be true even in dev.
+    secure: true, 
+    sameSite: "none", 
     expires: new Date(0),
+    path: "/", // Explicitly set path to ensure it matches the original cookie
   });
   res.status(200).json({ message: "Logged out successfully" });
 }
