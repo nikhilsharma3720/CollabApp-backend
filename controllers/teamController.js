@@ -73,17 +73,15 @@ async function joinTeam(req, res) {
 
 const getMyTeams = async (req, res) => {
   try {
-    const { userId } = req.params;
-
-    const userObjectId = new mongoose.Types.ObjectId(userId);
+    // Get the ID directly from the authenticated user object
+    const userId = req.user.id;
 
     const teams = await Team.find({
-      $or: [{ createdBy: userObjectId }, { members: userObjectId }],
+      members: userId, // Since 'createdBy' is also in 'members', this is enough
     }).select("name joinCode");
 
     res.status(200).json(teams);
   } catch (err) {
-    console.error("Error fetching teams:", err);
     res.status(500).json({ message: "Failed to fetch teams" });
   }
 };

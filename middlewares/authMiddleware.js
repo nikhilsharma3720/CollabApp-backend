@@ -1,15 +1,20 @@
 const jwt = require("jsonwebtoken");
 require("dotenv").config(); // load .env
 
-const authenticateToken = (req, res, next) => {
-  const token = req.cookies.token; // Get token from cookie
-  if (!token) return res.status(401).json({ message: "Unauthorized" });
+const authenticateToken = async (req, res, next) => {
+  // Check cookies first (this is where httpOnly cookies live)
+  const token = req.cookies.token;
 
-  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
-    if (err) return res.status(403).json({ message: "Forbidden" });
-    req.user = user;
+  if (!token) {
+    return res.status(401).json({ message: "No token, authorization denied" });
+  }
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = decoded; // Contains id and email
     next();
-  });
+  } catch (err) {
+    res.status(401).json({ message: "Token is not valid" });
+  }
 };
-
 module.exports = authenticateToken;
